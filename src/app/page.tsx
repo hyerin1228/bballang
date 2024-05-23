@@ -16,8 +16,8 @@ async function getProducts() {
   // const response = await axios.get("https://api.ballang.yoojinyoung.com/products/");
 
   const response = await fetch(
-    "https://api.ballang.yoojinyoung.com/products/"
-    // { next: { revalidate: 60 } }
+    "https://api.ballang.yoojinyoung.com/products/",
+    { next: { revalidate: 60 } }
   );
   const data = await response.json();
 
@@ -28,6 +28,7 @@ async function getProducts() {
 
 export default async function Page() {
   const products: Product[] = await getProducts();
+  console.log("rendered");
 
   return (
     <main>
