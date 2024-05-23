@@ -20,14 +20,17 @@ async function getProducts() {
   // return data.result;
   const response = await fetch(
     "https://api.ballang.yoojinyoung.com/products/",
-    { cache: "force-cache", next: { revalidate: 60 } }
+    { next: { revalidate: 60 } }
   );
-  const data = await response.json();
-  const products: Product[] = data.result;
 
+  if (!response.ok) {
+    throw new Error("Failed to fetch data");
+  }
+
+  const data = await response.json();
   console.log(`Products fetched at ${new Date().toLocaleTimeString()}`);
 
-  return products;
+  return data.result;
 }
 
 export default async function Page() {
