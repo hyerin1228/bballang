@@ -18,17 +18,24 @@ async function getProducts() {
   // const response = await axios.get("https://api.ballang.yoojinyoung.com/products/");
   // console.log(`Products fetched at ${new Date().toLocaleTimeString()}`);
   // return data.result;
-}
-
-export default async function Page() {
-  // const products: Product[] = await getProducts();
   const response = await fetch(
     "https://api.ballang.yoojinyoung.com/products/",
     { next: { revalidate: 60 } }
   );
   const data = await response.json();
   const products: Product[] = data.result;
+
   console.log(`Products fetched at ${new Date().toLocaleTimeString()}`);
+  console.log(`Cache-Control: ${response.headers.get("cache-control")}`);
+  console.log(`X-Cache: ${response.headers.get("x-cache")}`);
+
+  return products;
+}
+
+export default async function Page() {
+  const products: Product[] = await getProducts();
+
+  console.log(`Page rendered at ${new Date().toLocaleTimeString()}`);
 
   return (
     <main>
