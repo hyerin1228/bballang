@@ -18,10 +18,7 @@ async function getProducts() {
   // const response = await axios.get("https://api.ballang.yoojinyoung.com/products/");
   // console.log(`Products fetched at ${new Date().toLocaleTimeString()}`);
   // return data.result;
-  const response = await fetch(
-    "https://api.ballang.yoojinyoung.com/products/",
-    { next: { revalidate: 60 } }
-  );
+  const response = await fetch("https://api.ballang.yoojinyoung.com/products/");
 
   if (!response.ok) {
     throw new Error("Failed to fetch data");

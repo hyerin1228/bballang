@@ -22,6 +22,7 @@ async function getProducts() {
     "https://api.ballang.yoojinyoung.com/products/",
     { next: { revalidate: 60 } }
   );
+
   const data = await response.json();
   const products: Product[] = data.result;
 
