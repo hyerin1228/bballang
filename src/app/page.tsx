@@ -20,7 +20,7 @@ async function getProducts() {
   // return data.result;
   const response = await fetch(
     "https://api.ballang.yoojinyoung.com/products/",
-    { cache: "force-cache", next: { revalidate: 60 } }
+    { next: { revalidate: 60 } }
   );
   const data = await response.json();
   const products: Product[] = data.result;
