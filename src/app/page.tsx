@@ -5,15 +5,19 @@ import Link from "next/link";
 /*
 - [ ]  전체 상품 목록을 보여주어야 합니다
 - [ ]  서버사이드에서 60초에 한 번씩 새롭게 Static Site를 Generate해야 합니다.
+
+SSG가 빌드시에 한 번 호출이 된다는 것 같은데, revalidate 를 통해서 60초에 한 번씩 호출이 되는지 확인을 어떻게 해야할지...??
 */
+
+export const revalidate = 60;
 
 async function getProducts() {
   // fetch('https://...', { next: { revalidate: 3600 } })
   // const response = await axios.get("https://api.ballang.yoojinyoung.com/products/");
 
   const response = await fetch(
-    "https://api.ballang.yoojinyoung.com/products/",
-    { next: { revalidate: 60 } }
+    "https://api.ballang.yoojinyoung.com/products/"
+    // { next: { revalidate: 60 } }
   );
   const data = await response.json();
 
