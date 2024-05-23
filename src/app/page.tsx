@@ -1,24 +1,32 @@
-"use client";
 import ProductCard from "@/components/ProductCard";
 import { Product } from "@/interface/product";
 import Link from "next/link";
-import { useEffect, useState } from "react";
 
-function Page() {
-  const [products, setProducts] = useState<Product[]>([]);
+/*
+- [ ]  전체 상품 목록을 보여주어야 합니다
+- [ ]  서버사이드에서 60초에 한 번씩 새롭게 Static Site를 Generate해야 합니다.
+*/
 
-  useEffect(() => {
-    async function fetchProducts() {
-      const response = await fetch(
-        "https://api.ballang.yoojinyoung.com/products/"
-      );
-      const data = await response.json();
-      setProducts(data.result);
-    }
-    fetchProducts();
-  }, []);
+async function getProducts() {
+  // fetch('https://...', { next: { revalidate: 3600 } })
+  // const response = await axios.get("https://api.ballang.yoojinyoung.com/products/");
+
+  const response = await fetch(
+    "https://api.ballang.yoojinyoung.com/products/",
+    { next: { revalidate: 60 } }
+  );
+  const data = await response.json();
+
+  console.log(`Products fetched at ${new Date().toLocaleTimeString()}`);
+
+  return data.result;
+}
+
+export default async function Page() {
+  const products: Product[] = await getProducts();
+
   return (
-    <>
+    <main>
       <h2 className="block text-center mt-12 mb-12 text-2xl font-bold">
         Trending
       </h2>
@@ -29,8 +37,6 @@ function Page() {
           </Link>
         ))}
       </div>
-    </>
+    </main>
   );
 }
-
-export default Page;
