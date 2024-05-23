@@ -33,6 +33,8 @@ async function getProducts() {
   return data.result;
 }
 
+export const revalidate = 60;
+
 export default async function Page() {
   const products: Product[] = await getProducts();
 
