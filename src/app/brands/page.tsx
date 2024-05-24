@@ -1,4 +1,5 @@
-import { getBrands } from "@/apis/api";
+import { getBrandProducts, getBrands } from "@/apis/api";
+import ProductList from "@/components/ProductList";
 import Title from "@/components/Title";
 import { Brand } from "@/interface/product";
 
@@ -25,10 +26,24 @@ import { Brand } from "@/interface/product";
 
     ----분리 관련----
         Q. 전체 브랜드 목록을 가져오는 함수와 브랜드별 상품 목록을 가져오는 함수를 분리해야할까?
+            ㄴ 일단 분리는 해놨는데./..
+        Q. nav 밑에 특정 카테고리에 대한 상품 목록이 보여져야 하는데, query parameter 는 동적 라우팅인데 이 페이지에서 사용할 수가 있나..?
+        Q. 쿼리 파라미터를 서버 컴포넌트에서 사용할 수 있는 방법이 어떤 게 있을까?? 
+        Q. 1. src> app > brands BrandsPage.tsx http://localhost:3000/brands -> ALL 전체 상품목록
+           2.  src> app > brands > [brandId] BrandPage.tsx http://localhost:3000//brands?:brandId
+
+
 */
 
-async function BrandsPage() {
-  const catagories: Brand[] = await getBrands();
+async function BrandsPage({
+  searchParams,
+}: {
+  searchParams: { brandId?: string };
+}) {
+  const brandId = searchParams.brandId || "";
+  console.log(`brandId: ${brandId}`);
+  const brands: Brand[] = await getBrands();
+  const products = await getBrandProducts(brandId);
 
   return (
     <main className="flex flex-col">
@@ -40,18 +55,19 @@ async function BrandsPage() {
               ALL
             </a>
           </li>
-          {catagories.map((category) => (
-            <li key={category.id}>
+          {brands.map((brand) => (
+            <li key={brand.id}>
               <a
-                href={`/brands/${category.id}`}
+                href={`/brands?brandId=${brand.id}`}
                 className="text-sm text-gray-600"
               >
-                {category.nameKr}
+                {brand.nameKr}
               </a>
             </li>
           ))}
         </ul>
       </nav>
+      <ProductList products={products} />
     </main>
   );
 }

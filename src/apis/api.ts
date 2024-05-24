@@ -14,6 +14,7 @@ async function getBrands() {
 
 // 브랜드별 상품 목록 조회
 async function getBrandProducts(brandId: string) {
+  console.log(`brandId: ${brandId}`);
   const url =
     brandId === ""
       ? "https://api.ballang.yoojinyoung.com/products"
@@ -25,9 +26,9 @@ async function getBrandProducts(brandId: string) {
     throw new Error("Failed to fetch data");
   }
   const data = await res.json();
-  console.log(data.result);
+  //   console.log(data.result);
 
-  return data.result;
+  return brandId === "" ? data.result : data.result.products;
 }
 
 export { getBrandProducts, getBrands };
