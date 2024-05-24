@@ -1,3 +1,4 @@
+import { getBrands } from "@/apis/api";
 import Title from "@/components/Title";
 import { Brand } from "@/interface/product";
 
@@ -5,7 +6,7 @@ import { Brand } from "@/interface/product";
     ----카테고리 목록 관련----
     1. 일단 더미데이터로 작성을 해놓고 테스트를 해보는 게 좋겠다.
         Q. 더미데이터를 어떤 형식으로 작성해야할까?
-        T. API 를 요청했을 때 받아오는 데이터 형식을 참고해야할 것 같다.
+            ㄴ API 를 요청했을 때 받아오는 데이터 형식을 참고해야할 것 같다.
     2. 카테고리 목록의 UI와 스티일링 작성
         2-1. grid layout 으로 작성
         2-2. 각 카테고리는 <ul> -> <li> -> <a> 태그로 구성
@@ -16,24 +17,19 @@ import { Brand } from "@/interface/product";
 
     ----상품 목록 리스트 관련----
     4. 기본적으로 ALL 이 선택 되어 있는 상태로 시작
+        4-1. ALL 이 선택되어 있는 경우(default) 전체 상품 목록을 보여준다. getProducts
+        4-2. 특정 카테고리를 선택한 경우 해당 카테고리에 해당하는 상품 목록을 보여준다. getBrand
+        Q. 그런데 홈페이지에서도 똑같은 걸 호출해야되는데 중복이니까 api 호출을 따로 빼서 관리해야하나..?
+        Q. 카테고리를 어떤 걸 선택했는지 알기 위해 상태관리를 해야 할 것 같은데.. SSR 이니까 어떻게 해야할지 모르겠다.
     5. 카테고리를 클릭 시 해당 카테고리에 해당하는 상품 목록을 동적으로 보여준다.
 
+    ----분리 관련----
+        Q. 전체 브랜드 목록을 가져오는 함수와 브랜드별 상품 목록을 가져오는 함수를 분리해야할까?
 */
-async function getCategories() {
-  const res = await fetch("https://api.ballang.yoojinyoung.com/brands");
-  // The return value is *not* serialized // 반환 값이 *not* serialized 입니다. 무슨 뜻인지..?
-  // You can return Date, Map, Set, etc.
-
-  if (!res.ok) {
-    throw new Error("Failed to fetch data");
-  }
-  const data = await res.json();
-
-  return data.result;
-}
 
 async function BrandsPage() {
-  const catagories: Brand[] = await getCategories();
+  const catagories: Brand[] = await getBrands();
+
   return (
     <main className="flex flex-col">
       <Title title="Brands" />
