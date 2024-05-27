@@ -26,7 +26,8 @@
         1-2-2. 올바른 이메일 형식이 아니거나,
         1-2-3. 비밀번호가 6자리 미만일 때 경고메시지를 표시하기
       Q. 에러 메시지는 컴포넌트로 만들어서, 메시지를 표시할 수 있도록 하는 게 좋을까..?
-    처음 입력 시나리오
+    
+    ---- 유효성 검사를 로그인 버튼을 클릭할 때만 실행하고, 그 이후에 인풋 값이 유효할 때에는 오류 메시지를 사라지게 하는 방법이 필요한듯..! ----
       1. 이메일, 비밀번호 입력 후 로그인하기 버튼 클릭
       2. 유효성 검증이 통과되지 않으면 오류 메시지 발생
       3. 다시 재입력시에 유효성 검증이 통과되면 입력 중에 오류 메시지 사라짐
@@ -61,13 +62,13 @@ function LoginModal({ isOpen, onClose }: LoginModalProps) {
   // 이메일 입력 시
   const handleChangeEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
-    validateInput();
+    if (errors.email) validateInput();
   };
 
   // 비밀번호 입력 시
   const handleChangePassword = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value);
-    validateInput();
+    if (errors.password) validateInput();
   };
 
   // 로그인 버튼 클릭 시
@@ -89,10 +90,14 @@ function LoginModal({ isOpen, onClose }: LoginModalProps) {
     const emailRegex = /[a-z0-9]+@[a-z]+\.[a-z]{2,3}/; // https://shinyks.com/2023/11/javascript/regexp-%EC%9E%90%EB%B0%94%EC%8A%A4%ED%81%AC%EB%A6%BD%ED%8A%B8-%EC%9D%B4%EB%A9%94%EC%9D%BC-%EC%9C%A0%ED%9A%A8%EC%84%B1-%EA%B2%80%EC%A6%9D/
     if (email === "" || !emailRegex.test(email)) {
       newErrors.email = "올바른 이메일을 입력해주세요.";
+    } else {
+      newErrors.email = "";
     }
     // 비밀번호가 비어있거나 6자리 미만인 경우
     if (password === "" || password.length < 6) {
       newErrors.password = "비밀번호는 최소 6자리 이상이어야 합니다.";
+    } else {
+      newErrors.password = "";
     }
 
     setErrors(newErrors);
@@ -112,7 +117,7 @@ function LoginModal({ isOpen, onClose }: LoginModalProps) {
           <div className="w-full">
             <label>이메일</label>
             <input
-              type="email"
+              type="text"
               onChange={handleChangeEmail}
               className="w-full p-2.5 mt-1 border border-gray-300 rounded-sm focus:outline-none focus:ring-2 focus:ring-black-500"
             />
