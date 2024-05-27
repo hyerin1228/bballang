@@ -10,9 +10,9 @@
       ㄴ 이메일 :  "올바른 이메일을 입력해주세요."
       ㄴ 비밀번호 : "비밀번호는 최소 6자리 이상이어야 합니다."
       Q. 입력 값에 대한 유효성 검사는 상태 관리로 해야하나? 아니면 어떤 방법으로 해야할까?
-    2. 로그인 버튼 클릭 시 인풋과 버튼 비활성화
+    2. 로그인 버튼 클릭 시 백엔드 서버로 api 호출하고 인풋과 버튼 비활성화
       Q. 로딩 상태를 어떻게 관리해야할까?
-      ㄴ api 호출 시 로딩 상태를 관리해야할 것 같고, 호출이 끝나면 로딩 상태를 false 로 변경해야할 것 같은..?
+      ㄴ 리액트쿼리를 사용하면 될 것 같기도 한데.. 
     3. 로그인이 된 상태라면 새로고침을 해도 로그인이 풀리지 않아야 하는데..
       Q1.상태 관리가 필요할 것 같은데 어떻게 해야할지 모르겠다..
        ㄴ 로그인 성공 시 JWT 토큰을 받아와서 로컬스토리지에 저장해야할 것 같은데.. 
@@ -25,15 +25,23 @@
         1-2-1. 인풋 값이 없거나,
         1-2-2. 올바른 이메일 형식이 아니거나,
         1-2-3. 비밀번호가 6자리 미만일 때 경고메시지를 표시하기
-      Q. 에러 메시지는 컴포넌트로 만들어서, 메시지를 표시할 수 있도록 하는 게 좋을까..?
-    
-    ---- 유효성 검사를 로그인 버튼을 클릭할 때만 실행하고, 그 이후에 인풋 값이 유효할 때에는 오류 메시지를 사라지게 하는 방법이 필요한듯..! ----
-      1. 이메일, 비밀번호 입력 후 로그인하기 버튼 클릭
-      2. 유효성 검증이 통과되지 않으면 오류 메시지 발생
-      3. 다시 재입력시에 유효성 검증이 통과되면 입력 중에 오류 메시지 사라짐
+      Q. 에러 메시지는 컴포넌트로 만들어서, 메시지를 표시할 수 있도록 하는 게 좋을까..?    
+      ---- 유효성 검사를 로그인 버튼을 클릭할 때만 실행하고, 그 이후에 인풋 값이 유효할 때에는 오류 메시지를 사라지게 하는 방법이 필요한듯..! ----
+        1. 이메일, 비밀번호 입력 후 로그인하기 버튼 클릭
+        2. 유효성 검증이 통과되지 않으면 오류 메시지 발생
+        3. 다시 재입력시에 유효성 검증이 통과되면 입력 중에 오류 메시지 사라짐
+
+    2. 로그인 버튼 클릭 시 백엔드 서버로 api 호출하고 인풋과 버튼 비활성화
+      2-1. 로그인 버튼 클릭 시 유효성 검증을 한다.
+      2-2. errors 의 메시지가 없으면 백엔드 서버로 api 를 호출한다. 호출 시 인풋 값이 서버로 전송되어야 함. body(JSON): { email, password }
+      2-3. 호출 중에는 인풋과 버튼이 비활성화 되어야 한다. (로딩 상태)
+      2-4. 호출이 완료되면 모달창이 닫히도록 한다.
+    )
+
 
 */
 
+import { useAuth } from "@/contexts/AuthContext";
 import { useState } from "react";
 import ErrorMessage from "./ErrorMessage";
 
@@ -49,6 +57,8 @@ function LoginModal({ isOpen, onClose }: LoginModalProps) {
     email: "",
     password: "",
   });
+  // const { mutate, status, error, data } = useLogin(); // mutate: 비동기 함수를 호출하는 함수, status: 로딩 상태  'idle', 'pending', 'error', 'success' 중 하나 , error: 마지막으로 발생한 에러 객체, data: 마지막으로 성공 시 반환되는 데이터
+  const { login } = useAuth(); // useAuth 커스텀 훅 사용
 
   if (!isOpen) return;
 
@@ -72,15 +82,25 @@ function LoginModal({ isOpen, onClose }: LoginModalProps) {
   };
 
   // 로그인 버튼 클릭 시
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log(`email: ${email}, password: ${password}`);
 
     // 1. 입력한 데이터에 대한 유효성 검사
     validateInput();
     console.log(`errors: ${errors.email}, ${errors.password}`);
 
-    // 2. 유효성 검사를 통과했다면 로그인 요청
+    // 2. 유효성 검사를 통과했다면(errors 의 값이 없으면) 로그인 요청
+    if (!errors.email && !errors.password) {
+      console.log("로그인 요청");
+      try {
+        console.log("로그인 시도");
+        await login(email, password);
+        console.log("로그인 성공");
+        onClose();
+      } catch (error) {
+        console.error("로그인 실패", error);
+      }
+    }
   };
 
   // 인풋 유효성 검사

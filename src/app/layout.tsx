@@ -1,4 +1,5 @@
 import Header from "@/components/Header";
+import { AuthProvider } from "@/contexts/AuthContext";
 import ReactQueryProviders from "@/hooks/useReactQuery";
 import { QueryClient } from "@tanstack/react-query";
 import type { Metadata } from "next";
@@ -28,8 +29,10 @@ export default function RootLayout({
     <html lang="ko">
       <body className={inter.className}>
         <ReactQueryProviders>
-          <Header />
-          {children}
+          <AuthProvider>
+            <Header />
+            {children}
+          </AuthProvider>
         </ReactQueryProviders>
       </body>
     </html>
