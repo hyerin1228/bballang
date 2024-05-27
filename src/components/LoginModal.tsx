@@ -26,6 +26,11 @@
         1-2-2. 올바른 이메일 형식이 아니거나,
         1-2-3. 비밀번호가 6자리 미만일 때 경고메시지를 표시하기
       Q. 에러 메시지는 컴포넌트로 만들어서, 메시지를 표시할 수 있도록 하는 게 좋을까..?
+    처음 입력 시나리오
+      1. 이메일, 비밀번호 입력 후 로그인하기 버튼 클릭
+      2. 유효성 검증이 통과되지 않으면 오류 메시지 발생
+      3. 다시 재입력시에 유효성 검증이 통과되면 입력 중에 오류 메시지 사라짐
+
 */
 
 import { useState } from "react";
@@ -56,11 +61,13 @@ function LoginModal({ isOpen, onClose }: LoginModalProps) {
   // 이메일 입력 시
   const handleChangeEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
+    validateInput();
   };
 
   // 비밀번호 입력 시
   const handleChangePassword = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value);
+    validateInput();
   };
 
   // 로그인 버튼 클릭 시
