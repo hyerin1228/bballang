@@ -12,10 +12,10 @@ function ProductCard({ product }: ProductCardProps) {
       <Image
         src={product.imgSrc}
         alt={product.name}
-        className="w-full h-48 object-cover mb-3 hover:scale-110 duration-200 ease-in-out active:brightness-75 "
-        width={100}
-        height={100}
-        layout="responsive"
+        className="w-full mb-3 hover:scale-110 duration-200 ease-in-out active:brightness-75 "
+        width={200}
+        height={200}
+        style={{ objectFit: "cover" }}
       />
       <div className="text-sm font-bold">{product.brand.nameEn}</div>
       <h6 className="text-[15px]">{product.name}</h6>
