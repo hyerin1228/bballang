@@ -1,3 +1,4 @@
+import axiosInstance from "@/apis/config";
 import ProductList from "@/components/ProductList";
 import Title from "@/components/Title";
 import { Product } from "@/interface/product";
@@ -17,22 +18,23 @@ export const revalidate = 60;
 // 외부에 있는 함수니까 빌드 시에 호출이 한 번 될텐데
 async function getProducts() {
   // fetch('https://...', { next: { revalidate: 3600 } })
-  // const response = await axios.get("https://api.ballang.yoojinyoung.com/products/");
   // console.log(`Products fetched at ${new Date().toLocaleTimeString()}`);
   // return data.result;
+  const response = await axiosInstance.get("/products");
+  /*
   const response = await fetch(
-    "https://api.ballang.yoojinyoung.com/products/",
+    "https://api.com/products/",
     {
       next: { revalidate: 60 }, // 60초마다 캐시 재검증
     }
   );
+  */
 
-  if (!response.ok) {
+  if (!response) {
     throw new Error("Failed to fetch data");
   }
 
-  const data = await response.json();
-  return data.result;
+  return response.data.result;
 }
 
 export default async function ProductsPage() {
