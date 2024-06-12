@@ -1,10 +1,14 @@
 "use client";
+import { useAuth } from "@/contexts/AuthContext";
 import { useState } from "react";
 import { default as LoginModal } from "./LoginModal";
 
 function Header() {
   // 모달 열기/닫기 상태
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  // 로그인 상태 관리
+  const { isLoggedIn, logout } = useAuth();
 
   return (
     <header className="sticky top-0 flex items-center bg-white border-b border-gray-300 p-4 h-16">
@@ -23,14 +27,20 @@ function Header() {
         <a href="/sign-up" className="text-lg">
           회원가입
         </a>
-        <button
-          className="text-lg"
-          onClick={() => {
-            setIsModalOpen(true);
-          }}
-        >
-          로그인
-        </button>
+        {isLoggedIn ? (
+          <button className="text-lg" onClick={logout}>
+            로그아웃
+          </button>
+        ) : (
+          <button
+            className="text-lg"
+            onClick={() => {
+              setIsModalOpen(true);
+            }}
+          >
+            로그인
+          </button>
+        )}
         <LoginModal
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
