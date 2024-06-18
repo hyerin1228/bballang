@@ -5,10 +5,10 @@ export interface Brand {
 }
 
 export interface Product {
-  brand: Brand;
   id: string;
   name: string;
+  imgSrc: string;
+  brand: Brand;
   originalPrice: number;
   price: number;
-  imgSrc: string;
 }
